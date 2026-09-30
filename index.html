@@ -5,16 +5,46 @@
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>AI Video Platform Prototypes</title>
   <script src="https://cdn.tailwindcss.com"></script>
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>[v-cloak] { display: none; }</style>
 </head>
 <body class="bg-slate-950 text-slate-100 min-h-screen flex items-center justify-center p-6 font-sans">
-  <div class="max-w-3xl w-full space-y-8 text-center">
+  
+  <div id="app" v-cloak class="max-w-3xl w-full space-y-8 text-center">
     <div>
       <span class="text-xs font-mono px-3 py-1 bg-indigo-900/60 text-indigo-400 border border-indigo-700/50 rounded-full">Interactive AI Prototypes</span>
       <h1 class="text-3xl sm:text-4xl font-extrabold text-white mt-3">AI Short Video Creation Platform</h1>
       <p class="text-slate-400 text-sm mt-2">Candidate Assessment | Role: AI Native Product Engineer</p>
     </div>
 
+    <!-- Global AI Token Settings Banner -->
+    <div class="bg-slate-900 border border-slate-800 rounded-2xl p-4 text-left shadow-lg space-y-3">
+      <div class="flex items-center justify-between">
+        <div class="flex items-center gap-2">
+          <i class="fa-solid fa-key text-indigo-400"></i>
+          <h2 class="text-xs font-bold uppercase tracking-wider text-slate-200">Global Real AI Engine Configuration</h2>
+        </div>
+        <span class="text-[10px] px-2 py-0.5 rounded font-mono" :class="hasToken ? 'bg-emerald-950 text-emerald-400 border border-emerald-800' : 'bg-slate-800 text-slate-400'">
+          {{ hasToken ? 'Hugging Face API Active' : 'Serverless Fallback Gateway' }}
+        </span>
+      </div>
+
+      <div class="flex gap-2">
+        <input v-model="hfToken" type="password" placeholder="Paste your Hugging Face Token (hf_xxxxxxxxxxxx)" class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-3 py-2 text-xs text-white focus:outline-none focus:border-indigo-500">
+        <button @click="saveToken" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs rounded-xl transition-all">
+          Save Token
+        </button>
+        <button v-if="hasToken" @click="clearToken" class="px-3 py-2 bg-slate-800 hover:bg-red-950 hover:text-red-400 text-slate-400 text-xs rounded-xl transition-all">
+          Clear
+        </button>
+      </div>
+      <p class="text-[11px] text-slate-400">
+        Token is stored locally in your browser memory (<code class="text-indigo-300">localStorage</code>) and shared across all 3 prototypes. Leaving it blank uses free zero-config serverless AI rendering.
+      </p>
+    </div>
+
+    <!-- Prototypes Grid -->
     <div class="grid grid-cols-1 md:grid-cols-3 gap-4 text-left">
       <!-- Prototype 1 -->
       <a href="prototype-01-minimalist-mobile.html" class="block p-5 bg-slate-900 border border-slate-800 rounded-2xl hover:border-indigo-500 hover:shadow-lg transition-all group">
@@ -51,5 +81,34 @@
       <a href="DESIGN_RATIONALE.md" class="hover:text-indigo-400 transition-colors"><i class="fa-solid fa-file-lines mr-1"></i> Design Rationale Document</a>
     </div>
   </div>
+
+  <script src="ai-service.js"></script>
+  <script>
+    const { createApp, ref, computed, onMounted } = Vue;
+    createApp({
+      setup() {
+        const hfToken = ref("");
+        
+        onMounted(() => {
+          hfToken.value = AI_SERVICE.getStoredToken();
+        });
+
+        const hasToken = computed(() => !!hfToken.value && hfToken.value.startsWith("hf_"));
+
+        const saveToken = () => {
+          AI_SERVICE.setStoredToken(hfToken.value);
+          alert("Hugging Face API Token saved locally! All prototypes will now use your custom AI Inference token.");
+        };
+
+        const clearToken = () => {
+          hfToken.value = "";
+          AI_SERVICE.setStoredToken("");
+          alert("Token cleared. Prototypes will use serverless fallback rendering.");
+        };
+
+        return { hfToken, hasToken, saveToken, clearToken };
+      }
+    }).mount('#app');
+  </script>
 </body>
 </html>
