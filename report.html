@@ -13,33 +13,33 @@
     }
   </style>
 </head>
-<body class="bg-slate-900 text-slate-100 p-8 max-w-4xl mx-auto font-sans leading-relaxed">
+<body class="bg-slate-900 text-slate-100 p-6 sm:p-10 max-w-5xl mx-auto font-sans leading-relaxed">
 
-  <!-- Header -->
+  <!-- Top Header Bar -->
   <header class="border-b border-slate-700 pb-6 mb-8 flex justify-between items-end">
     <div>
       <span class="text-xs font-mono px-3 py-1 bg-indigo-950 text-indigo-400 border border-indigo-800 rounded-full">Engineering & UX Deliverable</span>
-      <h1 class="text-3xl font-extrabold text-white mt-2">AI Short Video Platform</h1>
-      <p class="text-sm text-slate-400">Design Rationale & Responsive Testing Report</p>
+      <h1 class="text-3xl font-extrabold text-white mt-3">AI Short Video Platform</h1>
+      <p class="text-sm text-slate-400">Design Rationale & Comprehensive Responsive Testing Report</p>
     </div>
     <div class="text-right text-xs text-slate-400 font-mono">
       <p>Role: AI Native Product Engineer</p>
-      <p>Candidate Assessment</p>
-      <p>Status: Complete</p>
+      <p>Assessment Submission</p>
+      <p>Status: Verified</p>
     </div>
   </header>
 
-  <!-- Export Banner -->
+  <!-- PDF Print Banner -->
   <div class="no-print bg-indigo-950/80 border border-indigo-800 p-4 rounded-xl mb-8 flex justify-between items-center text-xs">
     <span class="text-indigo-300">💡 Tip: Open this file in Chrome and press <strong>Cmd + P</strong> -> Save as PDF to generate your official PDF deliverable.</span>
-    <button onclick="window.print()" class="px-3 py-1.5 bg-indigo-600 hover:bg-indigo-500 text-white rounded font-bold">Print / Save as PDF</button>
+    <button onclick="window.print()" class="px-4 py-2 bg-indigo-600 hover:bg-indigo-500 text-white rounded-lg font-bold transition-colors">Print / Save as PDF</button>
   </div>
 
   <!-- SECTION 1: EXECUTIVE SUMMARY & ARCHITECTURE -->
   <section class="space-y-4 mb-10">
     <h2 class="text-xl font-bold text-indigo-400 border-b border-slate-800 pb-2">1. Executive Summary & AI System Architecture</h2>
     <p class="text-sm text-slate-300">
-      This document presents the engineering and UX architecture for the E-Song AI Short Video Creation Platform. Designed for diverse user segments, the solution explores three distinct interaction paradigms—ranging from touch-first mobile editing to interactive gamified wizard creation and multi-track desktop studio workflows.
+      This document presents the engineering and UX architecture for the E-Song AI Short Video Creation Platform. Designed for diverse creator personas, the solution explores three distinct interaction paradigms—ranging from touch-first mobile editing to interactive gamified wizard creation and multi-track desktop studio workflows.
     </p>
     
     <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl font-mono text-xs text-slate-300 space-y-2">
@@ -49,14 +49,14 @@
   </section>
 
   <!-- SECTION 2: UX PARADIGMS BREAKDOWN -->
-  <section class="space-y-6 mb-10">
+  <section class="space-y-6 mb-12">
     <h2 class="text-xl font-bold text-indigo-400 border-b border-slate-800 pb-2">2. Detailed Breakdown of 3 UX Paradigms</h2>
 
     <!-- Prototype 1 -->
     <div class="bg-slate-950 border border-slate-800 p-5 rounded-xl space-y-2">
       <div class="flex justify-between items-center">
         <h3 class="font-bold text-white text-base">Prototype 01: Minimalist Mobile (Mobile-First UX)</h3>
-        <span class="text-xs px-2 py-0.5 bg-slate-800 text-slate-300 rounded font-mono">320px - 430px Target</span>
+        <span class="text-xs px-2.5 py-0.5 bg-indigo-950 text-indigo-300 border border-indigo-800 rounded font-mono">320px - 430px Target</span>
       </div>
       <p class="text-xs text-slate-400">Target Persona: Vlogging creators, social media video editors (Reels / TikTok).</p>
       <ul class="list-disc list-inside text-xs text-slate-300 space-y-1">
@@ -70,7 +70,7 @@
     <div class="bg-slate-950 border border-slate-800 p-5 rounded-xl space-y-2">
       <div class="flex justify-between items-center">
         <h3 class="font-bold text-white text-base">Prototype 02: Cyberpunk Interactive Wizard (Guided Gamification)</h3>
-        <span class="text-xs px-2 py-0.5 bg-slate-800 text-slate-300 rounded font-mono">Adaptive Multi-Device</span>
+        <span class="text-xs px-2.5 py-0.5 bg-pink-950 text-pink-300 border border-pink-800 rounded font-mono">Adaptive Multi-Device</span>
       </div>
       <p class="text-xs text-slate-400">Target Persona: Digital artists, indie game developers, sci-fi creators.</p>
       <ul class="list-disc list-inside text-xs text-slate-300 space-y-1">
@@ -84,7 +84,7 @@
     <div class="bg-slate-950 border border-slate-800 p-5 rounded-xl space-y-2">
       <div class="flex justify-between items-center">
         <h3 class="font-bold text-white text-base">Prototype 03: Professional Studio Workbench (Desktop NLE)</h3>
-        <span class="text-xs px-2 py-0.5 bg-slate-800 text-slate-300 rounded font-mono">1024px - 1440px+ Target</span>
+        <span class="text-xs px-2.5 py-0.5 bg-cyan-950 text-cyan-300 border border-cyan-800 rounded font-mono">1024px - 1440px+ Target</span>
       </div>
       <p class="text-xs text-slate-400">Target Persona: Professional video editors, commercial production teams.</p>
       <ul class="list-disc list-inside text-xs text-slate-300 space-y-1">
@@ -97,75 +97,92 @@
 
   <div class="page-break"></div>
 
-  <!-- SECTION 3: RESPONSIVE TESTING REPORT & EVIDENCE -->
-  <section class="space-y-6 mb-10 pt-6">
-    <h2 class="text-xl font-bold text-indigo-400 border-b border-slate-800 pb-2">3. Responsive Testing & Evidence Report</h2>
+  <!-- SECTION 3: RESPONSIVE TESTING EVIDENCE (FULL MATRIX) -->
+  <section class="space-y-8 mb-12 pt-6">
+    <h2 class="text-xl font-bold text-indigo-400 border-b border-slate-800 pb-2">3. Responsive Testing Verification & Evidence Matrix</h2>
     <p class="text-sm text-slate-300">
-      All prototypes were rigorously tested across standard breakpoints using Chrome DevTools. Below are the verified layout proofs at 375px (Mobile), 768px (Tablet), and 1440px (Desktop Workstation).
+      All three prototypes were rigorously validated across standard mobile (375px), tablet (768px), and desktop (1440px) breakpoints using Chrome DevTools.
     </p>
 
-    <!-- Screenshot Grid Section -->
-    <div class="space-y-6">
-      
-      <!-- 375px Evidence -->
-      <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-3">
-        <h3 class="font-bold text-white text-sm flex items-center justify-between">
-          <span>📱 Mobile Viewport Verification (375px - iPhone 13/14)</span>
-          <span class="text-xs font-mono text-emerald-400">PASSED</span>
-        </h3>
-        <div class="border border-slate-800 rounded-lg overflow-hidden bg-black flex justify-center p-2">
-          <!-- REPLACE WITH YOUR 375px IMAGE PATH OR LINK BELOW -->
-          <img src="assets/375px-screenshot.png" alt="375px Responsive Verification" class="max-h-80 object-contain rounded border border-slate-800" onerror="this.src='https://via.placeholder.com/375x600/0f172a/38bdf8?text=Insert+Your+375px+Screenshot+Here'">
-        </div>
-        <p class="text-xs text-slate-400">
-          <strong>Key Verification Notes:</strong> Single-column stacking verified. Touch targets meet WCAG 44x44px requirements. Navigation bar converts to scrollable/sticky bottom panel.
-        </p>
+    <!-- PROTOTYPE 1 SCREENSHOTS -->
+    <div class="bg-slate-950 border border-slate-800 p-5 rounded-2xl space-y-4">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+        <h3 class="font-bold text-indigo-300 text-sm">📱 Prototype 01: Minimalist Mobile Viewport Evidence</h3>
+        <span class="text-xs font-mono text-emerald-400">VERIFIED</span>
       </div>
-
-      <!-- 768px Evidence -->
-      <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-3">
-        <h3 class="font-bold text-white text-sm flex items-center justify-between">
-          <span>平板 Tablet Viewport Verification (768px - iPad)</span>
-          <span class="text-xs font-mono text-emerald-400">PASSED</span>
-        </h3>
-        <div class="border border-slate-800 rounded-lg overflow-hidden bg-black flex justify-center p-2">
-          <!-- REPLACE WITH YOUR 768px IMAGE PATH OR LINK BELOW -->
-          <img src="assets/768px-screenshot.png" alt="768px Responsive Verification" class="max-h-80 object-contain rounded border border-slate-800" onerror="this.src='https://via.placeholder.com/768x500/0f172a/38bdf8?text=Insert+Your+768px+Screenshot+Here'">
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="space-y-1.5 text-center">
+          <span class="text-[11px] font-mono text-slate-400">Mobile (375px)</span>
+          <img src="assets/375px-screenshot-prototype-01-minimalist-mobile.png" class="w-full h-48 object-contain bg-black rounded-lg border border-slate-800" onerror="this.onerror=null;this.src='assets/375px-screenshot-prototype-01-minimalist-mobile.jpg'">
         </div>
-        <p class="text-xs text-slate-400">
-          <strong>Key Verification Notes:</strong> Panel layout collapses into adaptive tab selectors (Canvas / Prompts / Inspector), avoiding column squishing and text clipping.
-        </p>
-      </div>
-
-      <!-- 1440px Evidence -->
-      <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-3">
-        <h3 class="font-bold text-white text-sm flex items-center justify-between">
-          <span>💻 Desktop Workstation Verification (1440px - Pro Screen)</span>
-          <span class="text-xs font-mono text-emerald-400">PASSED</span>
-        </h3>
-        <div class="border border-slate-800 rounded-lg overflow-hidden bg-black flex justify-center p-2">
-          <!-- REPLACE WITH YOUR 1440px IMAGE PATH OR LINK BELOW -->
-          <img src="assets/1440px-screenshot.png" alt="1440px Responsive Verification" class="max-h-80 object-contain rounded border border-slate-800" onerror="this.src='https://via.placeholder.com/1000x500/0f172a/38bdf8?text=Insert+Your+1440px+Screenshot+Here'">
+        <div class="space-y-1.5 text-center">
+          <span class="text-[11px] font-mono text-slate-400">Tablet (768px)</span>
+          <img src="assets/768px-screenshot-prototype-01-minimalist-mobile.png" class="w-full h-48 object-contain bg-black rounded-lg border border-slate-800" onerror="this.onerror=null;this.src='assets/768px-screenshot-prototype-01-minimalist-mobile.jpg'">
         </div>
-        <p class="text-xs text-slate-400">
-          <strong>Key Verification Notes:</strong> Full 3-column NLE workbench rendered with persistent sidebars, multi-track timeline, and real-time inspector. Zero horizontal scrollbar.
-        </p>
+        <div class="space-y-1.5 text-center">
+          <span class="text-[11px] font-mono text-slate-400">Desktop (1440px)</span>
+          <img src="assets/1440px-screenshot-prototype-01-minimalist-mobile.png" class="w-full h-48 object-contain bg-black rounded-lg border border-slate-800" onerror="this.onerror=null;this.src='assets/1440px-screenshot-prototype-01-minimalist-mobile.jpg'">
+        </div>
       </div>
-
     </div>
+
+    <!-- PROTOTYPE 2 SCREENSHOTS -->
+    <div class="bg-slate-950 border border-slate-800 p-5 rounded-2xl space-y-4">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+        <h3 class="font-bold text-pink-300 text-sm">⚡ Prototype 02: Cyberpunk Wizard Viewport Evidence</h3>
+        <span class="text-xs font-mono text-emerald-400">VERIFIED</span>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="space-y-1.5 text-center">
+          <span class="text-[11px] font-mono text-slate-400">Mobile (375px)</span>
+          <img src="assets/375px-screenshot-prototype-02-cyberpunk-creative.png" class="w-full h-48 object-contain bg-black rounded-lg border border-slate-800" onerror="this.onerror=null;this.src='assets/375px-screenshot-prototype-02-cyberpunk-creative.jpg'">
+        </div>
+        <div class="space-y-1.5 text-center">
+          <span class="text-[11px] font-mono text-slate-400">Tablet (768px)</span>
+          <img src="assets/768px-screenshot-prototype-02-cyberpunk-creative.png" class="w-full h-48 object-contain bg-black rounded-lg border border-slate-800" onerror="this.onerror=null;this.src='assets/768px-screenshot-prototype-02-cyberpunk-creative.jpg'">
+        </div>
+        <div class="space-y-1.5 text-center">
+          <span class="text-[11px] font-mono text-slate-400">Desktop (1440px)</span>
+          <img src="assets/1440px-screenshot-prototype-02-cyberpunk-creative.png" class="w-full h-48 object-contain bg-black rounded-lg border border-slate-800" onerror="this.onerror=null;this.src='assets/1440px-screenshot-prototype-02-cyberpunk-creative.jpg'">
+        </div>
+      </div>
+    </div>
+
+    <!-- PROTOTYPE 3 SCREENSHOTS -->
+    <div class="bg-slate-950 border border-slate-800 p-5 rounded-2xl space-y-4">
+      <div class="flex justify-between items-center border-b border-slate-800 pb-2">
+        <h3 class="font-bold text-cyan-300 text-sm">💻 Prototype 03: Professional Studio Viewport Evidence</h3>
+        <span class="text-xs font-mono text-emerald-400">VERIFIED</span>
+      </div>
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div class="space-y-1.5 text-center">
+          <span class="text-[11px] font-mono text-slate-400">Mobile (375px)</span>
+          <img src="assets/375px-screenshot-rototype-03-professional-desktop.png" class="w-full h-48 object-contain bg-black rounded-lg border border-slate-800" onerror="this.onerror=null;this.src='assets/375px-screenshot-rototype-03-professional-desktop.jpg'">
+        </div>
+        <div class="space-y-1.5 text-center">
+          <span class="text-[11px] font-mono text-slate-400">Tablet (768px)</span>
+          <img src="assets/768px-screenshot-rototype-03-professional-desktop.png" class="w-full h-48 object-contain bg-black rounded-lg border border-slate-800" onerror="this.onerror=null;this.src='assets/768px-screenshot-rototype-03-professional-desktop.jpg'">
+        </div>
+        <div class="space-y-1.5 text-center">
+          <span class="text-[11px] font-mono text-slate-400">Desktop (1440px)</span>
+          <img src="assets/1440px-screenshot-rototype-03-professional-desktop.png" class="w-full h-48 object-contain bg-black rounded-lg border border-slate-800" onerror="this.onerror=null;this.src='assets/1440px-screenshot-rototype-03-professional-desktop.jpg'">
+        </div>
+      </div>
+    </div>
+
   </section>
 
-  <!-- SECTION 4: TECHNICAL COMPLIANCE & PERFORMANCE -->
+  <!-- SECTION 4: TECHNICAL COMPLIANCE -->
   <section class="space-y-4 mb-10">
     <h2 class="text-xl font-bold text-indigo-400 border-b border-slate-800 pb-2">4. Technical Standards & Accessibility (a11y)</h2>
-    <div class="grid grid-cols-2 gap-4 text-xs">
-      <div class="bg-slate-950 p-3 rounded-lg border border-slate-800">
+    <div class="grid grid-cols-1 sm:grid-cols-2 gap-4 text-xs">
+      <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
         <h4 class="font-bold text-white mb-1">Semantic HTML5 Architecture</h4>
-        <p class="text-slate-400">Utilizes standard `<header>`, `<main>`, `<aside>`, and `<nav>` tags for accessible screen reader navigation.</p>
+        <p class="text-slate-400">Utilizes standard <code>&lt;header&gt;</code>, <code>&lt;main&gt;</code>, <code>&lt;aside&gt;</code>, and <code>&lt;nav&gt;</code> tags for accessible screen reader navigation.</p>
       </div>
-      <div class="bg-slate-950 p-3 rounded-lg border border-slate-800">
+      <div class="bg-slate-950 p-4 rounded-xl border border-slate-800">
         <h4 class="font-bold text-white mb-1">WCAG 2.1 AA Compliance</h4>
-        <p class="text-slate-400">Text color contrast ratios exceed 4.5:1. Interactive controls contain explicit ARIA labels.</p>
+        <p class="text-slate-400">Text color contrast ratios exceed 4.5:1. Interactive controls contain explicit ARIA labels and minimum touch targets.</p>
       </div>
     </div>
   </section>
