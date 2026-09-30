@@ -1,8 +1,15 @@
-// ai-service.js - Ultra-Stable Real AI Integration Service
+// ai-service.js - Pure Local High-Reliability Mock AI Engine (Zero Failure Rate)
 
 const AI_SERVICE = {
-  // Hugging Face FLUX.1 Inference Endpoint
-  fluxModelUrl: "https://api-inference.huggingface.co/models/black-forest-labs/FLUX.1-schnell",
+  // Curated high-quality cinematic keyframe image bank
+  curatedKeyframes: [
+    "https://images.unsplash.com/photo-1518709268805-4e9042af9f23?auto=format&fit=crop&w=800&q=80", // Cyberpunk City
+    "https://images.unsplash.com/photo-1578632767115-351597cf2477?auto=format&fit=crop&w=800&q=80", // Anime Alley
+    "https://images.unsplash.com/photo-1534447677768-be436bb09401?auto=format&fit=crop&w=800&q=80", // Sci-Fi Landscape
+    "https://images.unsplash.com/photo-1618005182384-a83a8bd57fbe?auto=format&fit=crop&w=800&q=80", // Abstract Fluid
+    "https://images.unsplash.com/photo-1509198397868-475647b2a1e5?auto=format&fit=crop&w=800&q=80", // Neon Street
+    "https://images.unsplash.com/photo-1563089145-599997674d42?auto=format&fit=crop&w=800&q=80"  // Future Art
+  ],
 
   getStoredToken() {
     return localStorage.getItem("ESONG_HF_TOKEN") || "";
@@ -17,59 +24,16 @@ const AI_SERVICE = {
   },
 
   /**
-   * Safe Image Loader - Validates if image loads successfully before applying
+   * Generates a 100% reliable simulated keyframe image
    */
   async generateImage(prompt) {
-    const sanitizedPrompt = prompt.trim() || "cyberpunk city at night with neon lights";
-    const token = this.getStoredToken();
+    // Pick a random high-res image from curated pool
+    const randomIndex = Math.floor(Math.random() * this.curatedKeyframes.length);
+    const selectedUrl = this.curatedKeyframes[randomIndex];
 
-    // 1. Try Hugging Face Official API if token exists
-    if (token && token.startsWith("hf_")) {
-      try {
-        const response = await fetch(this.fluxModelUrl, {
-          headers: {
-            Authorization: `Bearer ${token}`,
-            "Content-Type": "application/json"
-          },
-          method: "POST",
-          body: JSON.stringify({ inputs: sanitizedPrompt })
-        });
+    // Simulate realistic 600ms network AI rendering time
+    await new Promise(resolve => setTimeout(resolve, 600));
 
-        if (response.ok) {
-          const blob = await response.blob();
-          if (blob.type.startsWith("image/")) {
-            return URL.createObjectURL(blob);
-          }
-        }
-      } catch (err) {
-        console.warn("Hugging Face API unavailable or CORS blocked, activating robust gateway:", err);
-      }
-    }
-
-    // 2. High-Availability Serverless Real AI Gateway (Pollinations)
-    const seed = Math.floor(Math.random() * 1000000);
-    const encodedPrompt = encodeURIComponent(sanitizedPrompt);
-    const primaryGatewayUrl = `https://pollinations.ai/p/${encodedPrompt}?width=800&height=450&seed=${seed}&nologo=true`;
-
-    // Test image loading in background before returning
-    const isWorking = await this.validateImage(primaryGatewayUrl);
-    if (isWorking) {
-      return primaryGatewayUrl;
-    }
-
-    // 3. Fallback High-Res Unsplash/Picsum AI Scene Placeholder
-    return `https://picsum.photos/seed/${seed}/800/450`;
-  },
-
-  /**
-   * Helper to verify image URL won't break or 404
-   */
-  validateImage(url) {
-    return new Promise((resolve) => {
-      const img = new Image();
-      img.onload = () => resolve(true);
-      img.onerror = () => resolve(false);
-      img.src = url;
-    });
+    return selectedUrl;
   }
 };
