@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Studio Lite - Minimalist Mobile</title>
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Vue 3 via CDN -->
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    [v-cloak] { display: none; }
+  </style>
+</head>
+<body class="bg-slate-50 text-slate-800 antialiased selection:bg-indigo-500 selection:text-white pb-20 md:pb-0">
+
+  <div id="app" v-cloak class="min-h-screen flex flex-col max-w-md mx-auto bg-white shadow-xl min-w-[320px] md:max-w-2xl lg:max-w-4xl transition-all duration-300">
+    
+    <!-- Top Header -->
+    <header class="sticky top-0 z-40 bg-white/90 backdrop-blur-md border-b border-slate-100 px-4 py-3 flex items-center justify-between">
+      <div class="flex items-center gap-2">
+        <div class="w-8 h-8 rounded-lg bg-indigo-600 text-white flex items-center justify-center font-bold text-lg shadow-md shadow-indigo-200">
+          <i class="fa-solid fa-wand-magic-sparkles text-sm"></i>
+        </div>
+        <div>
+          <h1 class="font-bold text-slate-900 leading-tight">AI Studio <span class="text-xs bg-indigo-100 text-indigo-700 font-semibold px-2 py-0.5 rounded-full">Lite</span></h1>
+          <p class="text-[10px] text-slate-500 hidden sm:block">Mobile-First AI Video Generator</p>
+        </div>
+      </div>
+      <div class="flex items-center gap-2">
+        <span class="text-xs bg-emerald-50 text-emerald-600 font-medium px-2 py-1 rounded-md flex items-center gap-1 border border-emerald-200">
+          <span class="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></span> Ready
+        </span>
+      </div>
+    </header>
+
+    <!-- Main Content Area with Dynamic Tabs -->
+    <main class="flex-1 p-4 space-y-6">
+
+      <!-- TAB 1: STORYBOARD GENERATOR -->
+      <section v-show="activeTab === 'storyboard'" aria-label="Storyboard Generator Section" class="space-y-4">
+        <div class="bg-slate-900 text-white p-4 rounded-2xl shadow-lg space-y-3 relative overflow-hidden">
+          <div class="absolute -right-4 -bottom-4 w-24 h-24 bg-indigo-500/20 rounded-full blur-xl pointer-events-none"></div>
+          <label for="prompt-input" class="block text-xs font-semibold uppercase tracking-wider text-indigo-300">Video Prompt Concept</label>
+          <div class="relative">
+            <textarea id="prompt-input" v-model="userPrompt" rows="3" class="w-full bg-slate-800 text-white text-sm rounded-xl p-3 pr-10 focus:outline-none focus:ring-2 focus:ring-indigo-500 placeholder-slate-400 resize-none border border-slate-700" placeholder="Describe your video idea (e.g., A futuristic detective exploring a rainy cyberpunk city)..."></textarea>
+            <button @click="generateStoryboard" :disabled="isGenerating" class="absolute right-2 bottom-3 bg-indigo-600 hover:bg-indigo-500 text-white p-2.5 rounded-lg shadow-md transition-all active:scale-95 disabled:opacity-50" aria-label="Generate Storyboard">
+              <i class="fa-solid" :class="isGenerating ? 'fa-spinner fa-spin' : 'fa-paper-plane'"></i>
+            </button>
+          </div>
+          
+          <!-- Sample Prompt Tags -->
+          <div class="pt-1">
+            <p class="text-[11px] text-slate-400 mb-1.5 font-medium">Try a sample prompt:</p>
+            <div class="flex gap-2 overflow-x-auto no-scrollbar pb-1">
+              <button v-for="(prompt, idx) in mockData.samplePrompts" :key="idx" @click="userPrompt = prompt" class="text-xs whitespace-nowrap bg-slate-800 hover:bg-slate-700 text-slate-300 px-2.5 py-1 rounded-full border border-slate-700 transition-colors">
+                ✨ {{ prompt.substring(0, 24) }}...
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Generated Storyboard List -->
+        <div class="space-y-3">
+          <div class="flex items-center justify-between">
+            <h2 class="font-bold text-slate-800 text-base flex items-center gap-2">
+              <span>Storyboard Keyframes</span>
+              <span class="text-xs bg-slate-200 text-slate-700 font-semibold px-2 py-0.5 rounded-full">{{ scenes.length }} Scenes</span>
+            </h2>
+            <button @click="addScene" class="text-xs text-indigo-600 font-semibold hover:underline flex items-center gap-1">
+              <i class="fa-solid fa-plus"></i> Add Scene
+            </button>
+          </div>
+
+          <div v-if="scenes.length === 0" class="text-center py-12 border-2 border-dashed border-slate-200 rounded-2xl bg-slate-50/50">
+            <i class="fa-solid fa-film text-3xl text-slate-300 mb-2"></i>
+            <p class="text-sm font-medium text-slate-500">No scenes generated yet.</p>
+            <p class="text-xs text-slate-400 mt-1">Enter a prompt above to create your storyboard.</p>
+          </div>
+
+          <!-- Scene Cards -->
+          <div v-for="(scene, index) in scenes" :key="scene.id" class="bg-white border border-slate-200 rounded-2xl p-3 shadow-sm hover:shadow-md transition-shadow space-y-3">
+            <div class="flex gap-3">
+              <div class="relative w-28 h-20 rounded-xl overflow-hidden bg-slate-100 flex-shrink-0 border border-slate-200">
+                <img :src="scene.image" :alt="scene.title" class="w-full h-full object-cover">
+                <span class="absolute bottom-1 right-1 bg-black/70 text-white text-[10px] font-mono px-1.5 py-0.5 rounded backdrop-blur-xs">{{ scene.duration }}s</span>
+              </div>
+              <div class="flex-1 min-w-0 space-y-1">
+                <div class="flex items-center justify-between">
+                  <span class="text-xs font-bold text-indigo-600 uppercase tracking-wide">Scene {{ index + 1 }}</span>
+                  <div class="flex items-center gap-1">
+                    <button @click="moveScene(index, -1)" :disabled="index === 0" class="p-1 text-slate-400 hover:text-slate-600 disabled:opacity-20" aria-label="Move Scene Up"><i class="fa-solid fa-chevron-up text-xs"></i></button>
+                    <button @click="moveScene(index, 1)" :disabled="index === scenes.length - 1" class="p-1 text-slate-400 hover:text-slate-600 disabled:opacity-20" aria-label="Move Scene Down"><i class="fa-solid fa-chevron-down text-xs"></i></button>
+                    <button @click="deleteScene(index)" class="p-1 text-red-400 hover:text-red-600 ml-1" aria-label="Delete Scene"><i class="fa-solid fa-trash-can text-xs"></i></button>
+                  </div>
+                </div>
+                <p class="text-xs text-slate-700 font-medium line-clamp-2 leading-snug">{{ scene.description }}</p>
+                <div class="flex items-center gap-2 pt-1">
+                  <span class="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded font-medium">{{ scene.style }}</span>
+                  <span v-if="scene.character" class="text-[10px] bg-indigo-50 text-indigo-600 px-2 py-0.5 rounded font-medium flex items-center gap-1">
+                    <i class="fa-solid fa-user-check text-[9px]"></i> {{ scene.character }}
+                  </span>
+                </div>
+              </div>
+            </div>
+            
+            <div class="flex items-center justify-between pt-2 border-t border-slate-100 text-xs">
+              <button @click="regenerateScene(index)" class="text-slate-500 hover:text-indigo-600 font-medium flex items-center gap-1">
+                <i class="fa-solid fa-rotate" :class="{'fa-spin': scene.isRegenerating}"></i> Regenerate
+              </button>
+              <button @click="selectSceneForEdit(index)" class="text-indigo-600 font-semibold hover:underline flex items-center gap-1">
+                Configure Parameters <i class="fa-solid fa-arrow-right text-[10px]"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 2: SCENE GENERATOR -->
+      <section v-show="activeTab === 'scene'" aria-label="Scene Customization Section" class="space-y-4">
+        <div class="flex items-center justify-between">
+          <h2 class="font-bold text-slate-800 text-base">Scene Parameter Studio</h2>
+          <span class="text-xs text-slate-500">Targeting: Scene {{ currentEditIndex + 1 }}</span>
+        </div>
+
+        <!-- Preview Area -->
+        <div class="relative w-full aspect-video rounded-2xl overflow-hidden bg-slate-900 border border-slate-200 shadow-md">
+          <img :src="currentScene.image" :alt="currentScene.title" class="w-full h-full object-cover">
+          <div class="absolute inset-0 bg-gradient-to-t from-black/80 via-transparent to-transparent flex flex-col justify-end p-4 text-white">
+            <span class="text-xs text-indigo-300 font-semibold uppercase">{{ currentScene.style }} Style</span>
+            <p class="text-sm font-medium">{{ currentScene.description }}</p>
+          </div>
+        </div>
+
+        <!-- Controls -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-4 shadow-sm space-y-4">
+          <!-- Visual Style Selector -->
+          <div class="space-y-2">
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wide">Visual Style</label>
+            <div class="grid grid-cols-3 gap-2">
+              <button v-for="style in mockData.styles" :key="style" @click="currentScene.style = style; updatePreviewImage()" :class="currentScene.style === style ? 'bg-indigo-600 text-white ring-2 ring-indigo-600' : 'bg-slate-100 text-slate-700 hover:bg-slate-200'" class="py-2 text-xs font-semibold rounded-xl transition-all">
+                {{ style }}
+              </button>
+            </div>
+          </div>
+
+          <!-- Camera Angle -->
+          <div class="space-y-2">
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wide">Camera Angle</label>
+            <select v-model="currentScene.cameraAngle" @change="updatePreviewImage" class="w-full bg-slate-50 border border-slate-200 rounded-xl p-2.5 text-xs font-medium text-slate-700 focus:ring-2 focus:ring-indigo-500 focus:outline-none">
+              <option v-for="angle in mockData.cameraAngles" :key="angle" :value="angle">{{ angle }}</option>
+            </select>
+          </div>
+
+          <!-- Mood / Lighting -->
+          <div class="space-y-2">
+            <label class="block text-xs font-bold text-slate-700 uppercase tracking-wide">Atmosphere & Mood</label>
+            <div class="flex flex-wrap gap-2">
+              <button v-for="mood in mockData.moods" :key="mood" @click="currentScene.mood = mood" :class="currentScene.mood === mood ? 'bg-slate-800 text-white' : 'bg-slate-100 text-slate-600'" class="px-3 py-1.5 rounded-lg text-xs font-medium transition-colors">
+                {{ mood }}
+              </button>
+            </div>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 3: CHARACTER GENERATOR -->
+      <section v-show="activeTab === 'character'" aria-label="Character Customization Section" class="space-y-4">
+        <div class="flex items-center justify-between">
+          <h2 class="font-bold text-slate-800 text-base">Character Studio</h2>
+          <span class="text-xs text-indigo-600 font-semibold">AI Preset Collection</span>
+        </div>
+
+        <div class="grid grid-cols-1 gap-3">
+          <div v-for="char in mockData.characters" :key="char.id" @click="selectedCharacter = char" :class="selectedCharacter.id === char.id ? 'ring-2 ring-indigo-600 bg-indigo-50/50' : 'bg-white'" class="border border-slate-200 rounded-2xl p-3 flex items-center gap-3 shadow-sm cursor-pointer hover:border-indigo-300 transition-all">
+            <img :src="char.avatar" :alt="char.name" class="w-16 h-16 rounded-xl object-cover border border-slate-200">
+            <div class="flex-1 min-w-0">
+              <h3 class="font-bold text-sm text-slate-800">{{ char.name }}</h3>
+              <p class="text-xs text-slate-500">Outfit: {{ char.outfit }}</p>
+              <div class="flex gap-1 mt-1">
+                <span class="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded">{{ char.style }}</span>
+                <span class="text-[10px] bg-slate-100 text-slate-600 px-2 py-0.5 rounded">{{ char.expression }}</span>
+              </div>
+            </div>
+            <div v-if="selectedCharacter.id === char.id" class="text-indigo-600 p-2">
+              <i class="fa-solid fa-circle-check text-lg"></i>
+            </div>
+          </div>
+        </div>
+
+        <!-- Apply to Scene Control -->
+        <div class="bg-slate-900 text-white rounded-2xl p-4 shadow-lg space-y-3">
+          <h3 class="text-xs font-bold uppercase tracking-wider text-indigo-300">Assign Character to Storyboard</h3>
+          <p class="text-xs text-slate-300">Apply <strong class="text-white">{{ selectedCharacter.name }}</strong> into your scenes:</p>
+          <div class="flex gap-2">
+            <button @click="applyCharacterToCurrentScene" class="flex-1 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold py-2.5 rounded-xl text-xs shadow-md transition-all">
+              Apply to Scene {{ currentEditIndex + 1 }}
+            </button>
+            <button @click="applyCharacterToAllScenes" class="flex-1 bg-slate-800 hover:bg-slate-700 text-slate-200 font-semibold py-2.5 rounded-xl text-xs border border-slate-700 transition-all">
+              Apply to All Scenes
+            </button>
+          </div>
+        </div>
+      </section>
+
+      <!-- TAB 4: COMPOSITION & PREVIEW -->
+      <section v-show="activeTab === 'preview'" aria-label="Video Preview and Composition Section" class="space-y-4">
+        <div class="flex items-center justify-between">
+          <h2 class="font-bold text-slate-800 text-base">Composition Preview</h2>
+          <span class="text-xs bg-indigo-100 text-indigo-700 font-bold px-2.5 py-0.5 rounded-full">Total: {{ totalDuration }}s</span>
+        </div>
+
+        <!-- Video Simulation Player -->
+        <div class="relative w-full aspect-video rounded-2xl overflow-hidden bg-black shadow-xl border border-slate-800">
+          <img :src="activePlayingScene.image" :alt="activePlayingScene.title" class="w-full h-full object-cover transition-all duration-500">
+          
+          <!-- Overlay Info -->
+          <div class="absolute top-3 left-3 bg-black/60 backdrop-blur-md px-2.5 py-1 rounded-lg text-[11px] text-white font-mono flex items-center gap-2">
+            <span class="w-2 h-2 rounded-full" :class="isPlaying ? 'bg-red-500 animate-ping' : 'bg-slate-400'"></span>
+            <span>Scene {{ currentPlaySceneIndex + 1 }} / {{ scenes.length }}</span>
+          </div>
+
+          <!-- Play Control Overlay -->
+          <div class="absolute inset-0 flex items-center justify-center bg-black/20 hover:bg-black/10 transition-colors">
+            <button @click="togglePlay" class="w-14 h-14 rounded-full bg-indigo-600/90 text-white flex items-center justify-center text-xl shadow-lg hover:scale-105 active:scale-95 transition-all">
+              <i class="fa-solid" :class="isPlaying ? 'fa-pause' : 'fa-play ml-1'"></i>
+            </button>
+          </div>
+
+          <!-- Bottom Timeline Progress Bar -->
+          <div class="absolute bottom-0 inset-x-0 bg-gradient-to-t from-black/90 to-transparent p-3 pt-6 space-y-1">
+            <div class="w-full bg-white/30 h-1.5 rounded-full overflow-hidden cursor-pointer" @click="seekTimeline">
+              <div class="bg-indigo-500 h-full transition-all duration-300" :style="{ width: playProgress + '%' }"></div>
+            </div>
+            <div class="flex justify-between text-[10px] text-slate-300 font-mono">
+              <span>00:00</span>
+              <span>00:{{ totalDuration < 10 ? '0' + totalDuration : totalDuration }}</span>
+            </div>
+          </div>
+        </div>
+
+        <!-- Timeline Track Display -->
+        <div class="bg-white border border-slate-200 rounded-2xl p-3 space-y-2 shadow-sm">
+          <p class="text-xs font-bold text-slate-700">Timeline Scene Track</p>
+          <div class="flex gap-1.5 overflow-x-auto no-scrollbar py-1">
+            <div v-for="(scene, idx) in scenes" :key="scene.id" @click="currentPlaySceneIndex = idx" :class="currentPlaySceneIndex === idx ? 'ring-2 ring-indigo-600 opacity-100' : 'opacity-60 hover:opacity-100'" class="flex-1 min-w-[70px] bg-slate-100 rounded-lg p-1.5 text-center cursor-pointer transition-all">
+              <p class="text-[10px] font-bold text-slate-800 truncate">Scene {{ idx + 1 }}</p>
+              <p class="text-[9px] text-slate-500 font-mono">{{ scene.duration }}s</p>
+            </div>
+          </div>
+        </div>
+
+        <!-- Export & Share Section -->
+        <div class="bg-slate-50 border border-slate-200 rounded-2xl p-4 space-y-3">
+          <h3 class="text-xs font-bold text-slate-700 uppercase tracking-wide">Simulated Platform Export</h3>
+          <div class="grid grid-cols-3 gap-2">
+            <button @click="simulatedExport('TikTok')" class="bg-white border border-slate-200 hover:border-indigo-500 p-2.5 rounded-xl text-center shadow-xs transition-all">
+              <i class="fa-brands fa-tiktok text-slate-800 text-base mb-1 block"></i>
+              <span class="text-[11px] font-semibold text-slate-700 block">TikTok</span>
+              <span class="text-[9px] text-slate-400">9:16 Vertical</span>
+            </button>
+            <button @click="simulatedExport('Instagram Reels')" class="bg-white border border-slate-200 hover:border-indigo-500 p-2.5 rounded-xl text-center shadow-xs transition-all">
+              <i class="fa-brands fa-instagram text-pink-600 text-base mb-1 block"></i>
+              <span class="text-[11px] font-semibold text-slate-700 block">Reels</span>
+              <span class="text-[9px] text-slate-400">9:16 1080p</span>
+            </button>
+            <button @click="simulatedExport('YouTube Shorts')" class="bg-white border border-slate-200 hover:border-indigo-500 p-2.5 rounded-xl text-center shadow-xs transition-all">
+              <i class="fa-brands fa-youtube text-red-600 text-base mb-1 block"></i>
+              <span class="text-[11px] font-semibold text-slate-700 block">Shorts</span>
+              <span class="text-[9px] text-slate-400">4K Ultra HD</span>
+            </button>
+          </div>
+        </div>
+      </section>
+
+    </main>
+
+    <!-- Bottom Mobile Sticky Navigation Bar -->
+    <nav aria-label="Mobile Bottom Navigation" class="fixed bottom-0 inset-x-0 bg-white/95 backdrop-blur-md border-t border-slate-200 px-2 py-2 max-w-md mx-auto md:max-w-2xl lg:max-w-4xl z-50">
+      <div class="grid grid-cols-4 gap-1">
+        <button @click="activeTab = 'storyboard'" :class="activeTab === 'storyboard' ? 'text-indigo-600 font-bold' : 'text-slate-400 font-medium'" class="flex flex-col items-center py-1 transition-colors">
+          <i class="fa-solid fa-list-check text-base"></i>
+          <span class="text-[10px] mt-0.5">Storyboard</span>
+        </button>
+        <button @click="activeTab = 'scene'" :class="activeTab === 'scene' ? 'text-indigo-600 font-bold' : 'text-slate-400 font-medium'" class="flex flex-col items-center py-1 transition-colors">
+          <i class="fa-solid fa-image text-base"></i>
+          <span class="text-[10px] mt-0.5">Scene Studio</span>
+        </button>
+        <button @click="activeTab = 'character'" :class="activeTab === 'character' ? 'text-indigo-600 font-bold' : 'text-slate-400 font-medium'" class="flex flex-col items-center py-1 transition-colors">
+          <i class="fa-solid fa-user-gear text-base"></i>
+          <span class="text-[10px] mt-0.5">Character</span>
+        </button>
+        <button @click="activeTab = 'preview'" :class="activeTab === 'preview' ? 'text-indigo-600 font-bold' : 'text-slate-400 font-medium'" class="flex flex-col items-center py-1 transition-colors">
+          <i class="fa-solid fa-circle-play text-base"></i>
+          <span class="text-[10px] mt-0.5">Preview</span>
+        </button>
+      </div>
+    </nav>
+
+  </div>
+
+  <!-- Shared Mock Data Script -->
+  <script src="mock-data.js"></script>
+
+  <!-- Vue App Initialization -->
+  <script>
+    const { createApp, ref, computed, onUnmounted } = Vue;
+
+    createApp({
+      setup() {
+        const mockData = MOCK_DATA;
+        const activeTab = ref('storyboard');
+        const userPrompt = ref("A cyberpunk city at night with neon lights and flying cars");
+        const isGenerating = ref(false);
+        const scenes = ref([...mockData.scenes]);
+        const currentEditIndex = ref(0);
+        const selectedCharacter = ref(mockData.characters[0]);
+        
+        // Player state
+        const isPlaying = ref(false);
+        const currentPlaySceneIndex = ref(0);
+        const playProgress = ref(0);
+        let playInterval = null;
+
+        const currentScene = computed(() => {
+          return scenes.value[currentEditIndex.value] || scenes.value[0];
+        });
+
+        const activePlayingScene = computed(() => {
+          return scenes.value[currentPlaySceneIndex.value] || scenes.value[0];
+        });
+
+        const totalDuration = computed(() => {
+          return scenes.value.reduce((acc, sc) => acc + sc.duration, 0);
+        });
+
+        const generateStoryboard = () => {
+          if (!userPrompt.value.trim()) return;
+          isGenerating.value = true;
+          setTimeout(() => {
+            isGenerating.value = false;
+            // Generate mock scenes based on prompt
+            scenes.value = [
+              {
+                id: Date.now() + 1,
+                title: "Scene 1: " + userPrompt.value.substring(0, 15),
+                duration: 5,
+                style: "Cyberpunk",
+                image: "https://picsum.photos/seed/" + Math.random() + "/800/450",
+                description: "AI Draft: " + userPrompt.value,
+                cameraAngle: "Wide Shot",
+                mood: "Dramatic"
+              },
+              {
+                id: Date.now() + 2,
+                title: "Scene 2: Action Focus",
+                duration: 7,
+                style: "Cyberpunk",
+                image: "https://picsum.photos/seed/" + Math.random() + "/800/450",
+                description: "Dynamic close-up detailing character key movement.",
+                cameraAngle: "Medium Shot",
+                mood: "Energetic"
+              }
+            ];
+          }, 1200);
+        };
+
+        const addScene = () => {
+          scenes.value.push({
+            id: Date.now(),
+            title: `Scene ${scenes.value.length + 1}: Custom Scene`,
+            duration: 6,
+            style: "Realistic",
+            image: `https://picsum.photos/seed/${Math.random()}/800/450`,
+            description: "New AI generated transition scene.",
+            cameraAngle: "Medium Shot",
+            mood: "Calm"
+          });
+        };
+
+        const deleteScene = (index) => {
+          if (scenes.value.length <= 1) {
+            alert("A video requires at least 1 scene.");
+            return;
+          }
+          scenes.value.splice(index, 1);
+          if (currentEditIndex.value >= scenes.value.length) {
+            currentEditIndex.value = 0;
+          }
+        };
+
+        const moveScene = (index, direction) => {
+          const targetIndex = index + direction;
+          if (targetIndex < 0 || targetIndex >= scenes.value.length) return;
+          const temp = scenes.value[index];
+          scenes.value[index] = scenes.value[targetIndex];
+          scenes.value[targetIndex] = temp;
+        };
+
+        const regenerateScene = (index) => {
+          scenes.value[index].isRegenerating = true;
+          setTimeout(() => {
+            scenes.value[index].image = `https://picsum.photos/seed/${Math.random()}/800/450`;
+            scenes.value[index].isRegenerating = false;
+          }, 800);
+        };
+
+        const selectSceneForEdit = (index) => {
+          currentEditIndex.value = index;
+          activeTab.value = 'scene';
+        };
+
+        const updatePreviewImage = () => {
+          currentScene.value.image = `https://picsum.photos/seed/${currentScene.value.style}-${Math.random()}/800/450`;
+        };
+
+        const applyCharacterToCurrentScene = () => {
+          currentScene.value.character = selectedCharacter.value.name;
+          alert(`Character '${selectedCharacter.value.name}' assigned to Scene ${currentEditIndex.value + 1}!`);
+        };
+
+        const applyCharacterToAllScenes = () => {
+          scenes.value.forEach(sc => sc.character = selectedCharacter.value.name);
+          alert(`Character '${selectedCharacter.value.name}' assigned to all scenes!`);
+        };
+
+        const togglePlay = () => {
+          isPlaying.value = !isPlaying.value;
+          if (isPlaying.value) {
+            playInterval = setInterval(() => {
+              if (playProgress.value >= 100) {
+                playProgress.value = 0;
+                currentPlaySceneIndex.value = 0;
+              } else {
+                playProgress.value += 5;
+                const sceneSegment = 100 / scenes.value.length;
+                currentPlaySceneIndex.value = Math.min(
+                  Math.floor(playProgress.value / sceneSegment),
+                  scenes.value.length - 1
+                );
+              }
+            }, 300);
+          } else {
+            clearInterval(playInterval);
+          }
+        };
+
+        const seekTimeline = (event) => {
+          const rect = event.currentTarget.getBoundingClientRect();
+          const clickX = event.clientX - rect.left;
+          playProgress.value = Math.round((clickX / rect.width) * 100);
+          const sceneSegment = 100 / scenes.value.length;
+          currentPlaySceneIndex.value = Math.min(
+            Math.floor(playProgress.value / sceneSegment),
+            scenes.value.length - 1
+          );
+        };
+
+        const simulatedExport = (platform) => {
+          alert(`[Simulated Export] Rendering project for ${platform}... Resolution auto-optimized!`);
+        };
+
+        onUnmounted(() => {
+          if (playInterval) clearInterval(playInterval);
+        });
+
+        return {
+          mockData,
+          activeTab,
+          userPrompt,
+          isGenerating,
+          scenes,
+          currentEditIndex,
+          currentScene,
+          selectedCharacter,
+          isPlaying,
+          currentPlaySceneIndex,
+          activePlayingScene,
+          playProgress,
+          totalDuration,
+          generateStoryboard,
+          addScene,
+          deleteScene,
+          moveScene,
+          regenerateScene,
+          selectSceneForEdit,
+          updatePreviewImage,
+          applyCharacterToCurrentScene,
+          applyCharacterToAllScenes,
+          togglePlay,
+          seekTimeline,
+          simulatedExport
+        };
+      }
+    }).mount('#app');
+  </script>
+</body>
+</html>

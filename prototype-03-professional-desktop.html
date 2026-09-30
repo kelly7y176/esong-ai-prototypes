@@ -1,0 +1,227 @@
+<!DOCTYPE html>
+<html lang="en" class="dark">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>AI Studio Pro - Desktop Workbench</title>
+  <!-- Tailwind CSS via CDN -->
+  <script src="https://cdn.tailwindcss.com"></script>
+  <!-- Vue 3 via CDN -->
+  <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
+  <!-- FontAwesome Icons -->
+  <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
+  <style>
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
+    [v-cloak] { display: none; }
+  </style>
+</head>
+<body class="bg-zinc-950 text-zinc-100 min-h-screen flex flex-col font-sans antialiased selection:bg-indigo-600 selection:text-white">
+
+  <div id="app" v-cloak class="min-h-screen lg:h-screen flex flex-col overflow-x-hidden lg:overflow-hidden">
+    
+    <!-- Top Studio Bar -->
+    <header class="h-auto min-h-[3rem] py-2 border-b border-zinc-800 bg-zinc-900/80 px-4 flex flex-wrap items-center justify-between gap-2 shrink-0">
+      <div class="flex items-center gap-2">
+        <div class="w-7 h-7 rounded bg-indigo-600 flex items-center justify-center font-black text-xs text-white">
+          PRO
+        </div>
+        <span class="font-bold text-xs sm:text-sm tracking-wide text-zinc-200 truncate">E-SONG AI WORKBENCH <span class="text-[10px] text-zinc-500 font-mono hidden sm:inline">v2.4</span></span>
+      </div>
+      <div class="flex items-center gap-2 sm:gap-3 text-xs">
+        <span class="text-zinc-400 hidden md:inline">Project: <strong class="text-zinc-200">Cyberpunk_Ad_60s.esong</strong></span>
+        <button @click="simulatedExport" class="px-2.5 py-1 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold rounded text-xs transition-colors shadow-sm flex items-center gap-1">
+          <i class="fa-solid fa-file-export"></i> <span class="hidden sm:inline">Export Studio Master</span><span class="sm:hidden">Export</span>
+        </button>
+      </div>
+    </header>
+
+    <!-- Mobile / Tablet Active Panel Tab Selector (Visible < 1024px) -->
+    <div class="lg:hidden bg-zinc-900 border-b border-zinc-800 px-2 py-1.5 flex gap-1 text-xs">
+      <button @click="mobilePanel = 'canvas'" :class="mobilePanel === 'canvas' ? 'bg-indigo-600 text-white' : 'text-zinc-400 bg-zinc-950'" class="flex-1 py-1.5 rounded font-medium transition-colors">
+        <i class="fa-solid fa-display mr-1"></i> Canvas
+      </button>
+      <button @click="mobilePanel = 'tools'" :class="mobilePanel === 'tools' ? 'bg-indigo-600 text-white' : 'text-zinc-400 bg-zinc-950'" class="flex-1 py-1.5 rounded font-medium transition-colors">
+        <i class="fa-solid fa-wand-magic-sparkles mr-1"></i> Prompts
+      </button>
+      <button @click="mobilePanel = 'inspector'" :class="mobilePanel === 'inspector' ? 'bg-indigo-600 text-white' : 'text-zinc-400 bg-zinc-950'" class="flex-1 py-1.5 rounded font-medium transition-colors">
+        <i class="fa-solid fa-sliders mr-1"></i> Inspector
+      </button>
+    </div>
+
+    <!-- Main Workspace - Adaptive Responsive Grid -->
+    <div class="flex-1 flex flex-col lg:flex-row overflow-y-auto lg:overflow-hidden">
+      
+      <!-- Left Tool Panel (Prompt Generator) -->
+      <aside aria-label="Tool Panel" 
+             :class="{'hidden lg:flex': mobilePanel !== 'tools', 'flex': mobilePanel === 'tools'}"
+             class="w-full lg:w-72 xl:w-80 border-b lg:border-b-0 lg:border-r border-zinc-800 bg-zinc-900/50 p-4 flex-col gap-4 overflow-y-auto shrink-0">
+        <div class="space-y-2">
+          <label class="text-xs font-bold uppercase text-zinc-400 tracking-wider">AI Prompt Generator</label>
+          <textarea v-model="userPrompt" rows="3" class="w-full bg-zinc-950 border border-zinc-800 rounded-lg p-2.5 text-xs text-zinc-200 focus:outline-none focus:border-indigo-500 resize-none" placeholder="Enter video prompt concept..."></textarea>
+          <button @click="generateStoryboard" :disabled="isGenerating" class="w-full py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs rounded transition-all">
+            <i class="fa-solid" :class="isGenerating ? 'fa-spinner fa-spin' : 'fa-wand-magic-sparkles'"></i> Generate Storyboard
+          </button>
+        </div>
+
+        <div class="border-t border-zinc-800 pt-3 space-y-2">
+          <label class="text-xs font-bold uppercase text-zinc-400 tracking-wider">Presets Library</label>
+          <div class="space-y-1">
+            <button v-for="(p, i) in mockData.samplePrompts" :key="i" @click="userPrompt = p" class="w-full text-left text-[11px] p-2 rounded bg-zinc-950/60 hover:bg-zinc-800 text-zinc-400 hover:text-zinc-200 truncate border border-zinc-900">
+              ⚡ {{ p }}
+            </button>
+          </div>
+        </div>
+      </aside>
+
+      <!-- Center Main Canvas / Preview Viewport -->
+      <main :class="{'hidden lg:flex': mobilePanel !== 'canvas', 'flex': mobilePanel === 'canvas'}"
+            class="flex-1 flex-col bg-zinc-950 overflow-y-auto lg:overflow-hidden min-w-0">
+        <div class="flex-1 p-3 sm:p-4 flex items-center justify-center relative min-h-[220px]">
+          <div class="w-full max-w-3xl aspect-video rounded-xl overflow-hidden border border-zinc-800 bg-black relative shadow-2xl">
+            <img :src="activeScene.image" class="w-full h-full object-cover">
+            
+            <div class="absolute top-2 left-2 sm:top-3 sm:left-3 bg-black/70 backdrop-blur-md px-2 py-0.5 sm:px-3 sm:py-1 rounded text-[10px] sm:text-xs font-mono text-zinc-300 max-w-[80%] truncate">
+              SCENE {{ currentSceneIndex + 1 }} / {{ scenes.length }} - {{ activeScene.title }}
+            </div>
+
+            <div class="absolute inset-0 flex items-center justify-center bg-black/20 hover:bg-black/40 transition-colors">
+              <button @click="togglePlay" class="w-10 h-10 sm:w-14 sm:h-14 rounded-full bg-indigo-600/90 text-white flex items-center justify-center text-sm sm:text-xl shadow-lg hover:scale-105 transition-transform">
+                <i class="fa-solid" :class="isPlaying ? 'fa-pause' : 'fa-play ml-0.5 sm:ml-1'"></i>
+              </button>
+            </div>
+          </div>
+        </div>
+
+        <!-- Timeline Section -->
+        <div class="h-auto min-h-[120px] lg:h-44 border-t border-zinc-800 bg-zinc-900/90 p-3 flex flex-col gap-2 shrink-0">
+          <div class="flex items-center justify-between text-xs text-zinc-400 flex-wrap gap-1">
+            <div class="flex items-center gap-2">
+              <button @click="togglePlay" class="px-2.5 py-1 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 rounded font-bold text-xs">
+                <i class="fa-solid" :class="isPlaying ? 'fa-pause' : 'fa-play'"></i>
+              </button>
+              <span class="font-mono text-zinc-300 text-[11px]">00:00 / 00:{{ totalDuration < 10 ? '0' + totalDuration : totalDuration }}</span>
+            </div>
+            <span class="text-[10px] text-zinc-500 uppercase tracking-widest hidden sm:inline">Multi-Track Inspector</span>
+          </div>
+
+          <!-- Video Track -->
+          <div class="flex-1 bg-zinc-950 border border-zinc-800 rounded p-1.5 sm:p-2 flex gap-2 overflow-x-auto no-scrollbar">
+            <div v-for="(sc, idx) in scenes" :key="sc.id" @click="currentSceneIndex = idx"
+                 :class="currentSceneIndex === idx ? 'ring-2 ring-indigo-500 bg-indigo-950/30' : 'bg-zinc-900 border-zinc-800'"
+                 class="min-w-[110px] sm:min-w-[130px] h-20 sm:h-full border rounded p-1.5 sm:p-2 flex flex-col justify-between cursor-pointer transition-all shrink-0">
+              <span class="text-[9px] sm:text-[10px] font-bold text-zinc-400 uppercase">Scene {{ idx + 1 }}</span>
+              <p class="text-[11px] sm:text-xs text-zinc-200 font-semibold truncate">{{ sc.style }}</p>
+              <span class="text-[9px] sm:text-[10px] font-mono text-indigo-400">{{ sc.duration }}s</span>
+            </div>
+          </div>
+        </div>
+      </main>
+
+      <!-- Right Inspector Panel -->
+      <aside aria-label="Inspector Panel" 
+             :class="{'hidden lg:flex': mobilePanel !== 'inspector', 'flex': mobilePanel === 'inspector'}"
+             class="w-full lg:w-72 xl:w-80 border-t lg:border-t-0 lg:border-l border-zinc-800 bg-zinc-900/50 p-4 flex-col gap-4 overflow-y-auto shrink-0">
+        <h3 class="text-xs font-bold uppercase text-zinc-400 tracking-wider">Inspector & Controls</h3>
+
+        <!-- Scene Controls -->
+        <div class="bg-zinc-950 border border-zinc-800 p-3 rounded-lg space-y-3">
+          <label class="text-xs font-semibold text-zinc-300">Style Preset</label>
+          <select v-model="activeScene.style" @change="regenerateActiveScene" class="w-full bg-zinc-900 border border-zinc-800 rounded p-2 text-xs text-zinc-200">
+            <option v-for="s in mockData.styles" :key="s" :value="s">{{ s }}</option>
+          </select>
+
+          <label class="text-xs font-semibold text-zinc-300 block pt-1">Camera Lens</label>
+          <select v-model="activeScene.cameraAngle" class="w-full bg-zinc-900 border border-zinc-800 rounded p-2 text-xs text-zinc-200">
+            <option v-for="c in mockData.cameraAngles" :key="c" :value="c">{{ c }}</option>
+          </select>
+
+          <button @click="regenerateActiveScene" class="w-full py-2 bg-zinc-800 hover:bg-zinc-700 text-zinc-200 font-semibold text-xs rounded border border-zinc-700 transition-colors">
+            <i class="fa-solid fa-arrows-rotate mr-1"></i> Re-render Scene
+          </button>
+        </div>
+
+        <!-- Character Binding -->
+        <div class="bg-zinc-950 border border-zinc-800 p-3 rounded-lg space-y-3">
+          <label class="text-xs font-semibold text-zinc-300">Character Assignment</label>
+          <div class="space-y-2">
+            <div v-for="char in mockData.characters" :key="char.id" @click="selectedChar = char"
+                 :class="selectedChar.id === char.id ? 'border-indigo-500 bg-indigo-950/20' : 'border-zinc-800 bg-zinc-900'"
+                 class="p-2 border rounded flex items-center gap-2 cursor-pointer">
+              <img :src="char.avatar" class="w-8 h-8 rounded object-cover">
+              <div class="flex-1 min-w-0">
+                <p class="text-xs font-semibold text-zinc-200 truncate">{{ char.name }}</p>
+                <p class="text-[10px] text-zinc-500 truncate">{{ char.outfit }}</p>
+              </div>
+            </div>
+          </div>
+          <button @click="assignCharacter" class="w-full py-2 bg-indigo-600 hover:bg-indigo-500 text-white font-semibold text-xs rounded transition-colors">
+            Assign Character to Scene {{ currentSceneIndex + 1 }}
+          </button>
+        </div>
+      </aside>
+
+    </div>
+
+  </div>
+
+  <script src="mock-data.js"></script>
+  <script>
+    const { createApp, ref, computed } = Vue;
+    createApp({
+      setup() {
+        const mockData = MOCK_DATA;
+        const userPrompt = ref(mockData.samplePrompts[0]);
+        const isGenerating = ref(false);
+        const scenes = ref([...mockData.scenes]);
+        const currentSceneIndex = ref(0);
+        const selectedChar = ref(mockData.characters[0]);
+        const isPlaying = ref(false);
+        const mobilePanel = ref('canvas'); // 'canvas', 'tools', 'inspector'
+        let timer = null;
+
+        const activeScene = computed(() => scenes.value[currentSceneIndex.value]);
+
+        const totalDuration = computed(() => scenes.value.reduce((acc, s) => acc + s.duration, 0));
+
+        const generateStoryboard = () => {
+          isGenerating.value = true;
+          setTimeout(() => {
+            scenes.value.forEach(s => s.image = `https://picsum.photos/seed/${Math.random()}/800/450`);
+            isGenerating.value = false;
+          }, 1000);
+        };
+
+        const regenerateActiveScene = () => {
+          activeScene.value.image = `https://picsum.photos/seed/${Math.random()}/800/450`;
+        };
+
+        const assignCharacter = () => {
+          alert(`Assigned ${selectedChar.value.name} to Scene ${currentSceneIndex.value + 1}`);
+        };
+
+        const togglePlay = () => {
+          isPlaying.value = !isPlaying.value;
+          if (isPlaying.value) {
+            timer = setInterval(() => {
+              currentSceneIndex.value = (currentSceneIndex.value + 1) % scenes.value.length;
+            }, 1200);
+          } else {
+            clearInterval(timer);
+          }
+        };
+
+        const simulatedExport = () => {
+          alert("[Studio Export] Exporting 4K Pro Master with multi-track audio...");
+        };
+
+        return {
+          mockData, userPrompt, isGenerating, scenes, currentSceneIndex, selectedChar,
+          activeScene, totalDuration, isPlaying, mobilePanel, generateStoryboard,
+          regenerateActiveScene, assignCharacter, togglePlay, simulatedExport
+        };
+      }
+    }).mount('#app');
+  </script>
+</body>
+</html>
