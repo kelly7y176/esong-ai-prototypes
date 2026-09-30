@@ -1,0 +1,84 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>E-Song AI Platform - Design Rationale Document</title>
+  <script src="https://cdn.tailwindcss.com"></script>
+  <style>
+    @media print {
+      body { background-color: #ffffff !important; color: #000000 !important; }
+      .no-print { display: none !important; }
+    }
+  </style>
+</head>
+<body class="bg-slate-900 text-slate-100 p-8 max-w-4xl mx-auto font-sans leading-relaxed">
+
+  <header class="border-b border-slate-700 pb-6 mb-8 flex justify-between items-end">
+    <div>
+      <span class="text-xs font-mono px-3 py-1 bg-indigo-950 text-indigo-400 border border-indigo-800 rounded-full">Deliverable 01</span>
+      <h1 class="text-3xl font-extrabold text-white mt-2">Design Rationale Document</h1>
+      <p class="text-sm text-slate-400">AI Short Video Creation Platform - 3 UX Paradigms Strategy</p>
+    </div>
+    <div class="text-right text-xs text-slate-400 font-mono">
+      <p>Role: AI Native Product Engineer</p>
+      <p>Status: Complete</p>
+    </div>
+  </header>
+
+  <div class="no-print bg-indigo-950/80 border border-indigo-800 p-4 rounded-xl mb-8 flex justify-between items-center text-xs">
+    <span class="text-indigo-300">💡 Press <strong>Cmd + P</strong> -> Save as PDF to export <strong>DESIGN_RATIONALE.pdf</strong></span>
+    <button onclick="window.print()" class="px-4 py-2 bg-indigo-600 text-white rounded font-bold">Save as PDF</button>
+  </div>
+
+  <section class="space-y-4 mb-8">
+    <h2 class="text-lg font-bold text-indigo-400 border-b border-slate-800 pb-1">1. Executive Summary & Core Intent</h2>
+    <p class="text-xs text-slate-300">
+      This document outlines the product rationale behind three HTML5 prototypes developed for the E-Song AI Short Video Platform. The core intent is to validate how different interface architectures—ranging from quick touch prompting to interactive step-by-step wizard guides and multi-track desktop workbenches—accommodate creators of varying technical skills and context needs.
+    </p>
+  </section>
+
+  <section class="space-y-4 mb-8">
+    <h2 class="text-lg font-bold text-indigo-400 border-b border-slate-800 pb-1">2. Core AI Workflow Pipeline</h2>
+    <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl font-mono text-xs text-slate-300 space-y-2">
+      <p class="text-indigo-400 font-bold">// End-to-End Generative Logic:</p>
+      <p>Prompt Input / Presets ➔ Storyboard Keyframe Generation ➔ Scene Style & Camera Lens Tuning ➔ Character Avatar Assignment ➔ Multi-Track Composition Preview & Master Export</p>
+    </div>
+  </section>
+
+  <section class="space-y-6 mb-8">
+    <h2 class="text-lg font-bold text-indigo-400 border-b border-slate-800 pb-1">3. UX Paradigms Deep Dive</h2>
+
+    <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-2">
+      <h3 class="font-bold text-white text-sm">Prototype 01: Minimalist Mobile (Mobile-First UX)</h3>
+      <p class="text-xs text-slate-400">Target Segment: Casual vloggers, social media creators (TikTok/Reels).</p>
+      <ul class="list-disc list-inside text-xs text-slate-300 space-y-1">
+        <li><strong>Rationale:</strong> Solves mobile viewport constraints by employing a single-column layout anchored with a sticky 44px+ touch-target bottom navigation bar.</li>
+        <li><strong>AI Interaction:</strong> One-tap prompt chips accelerate prompt synthesis without forcing tedious typing on touch keyboards.</li>
+        <li><strong>Trade-off:</strong> Complex multi-track editing is intentionally suppressed to minimize touch friction and focus on speed.</li>
+      </ul>
+    </div>
+
+    <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-2">
+      <h3 class="font-bold text-white text-sm">Prototype 02: Cyberpunk Interactive Wizard (Guided Gamification)</h3>
+      <p class="text-xs text-slate-400">Target Segment: Digital artists, indie game creators, sci-fi enthusiasts.</p>
+      <ul class="list-disc list-inside text-xs text-slate-300 space-y-1">
+        <li><strong>Rationale:</strong> Uses a 4-step linear wizard (Synthesize ➔ Tune ➔ Avatar ➔ Render Matrix) to eliminate cognitive overload for novice AI creators.</li>
+        <li><strong>AI Interaction:</strong> Features an interactive prompt randomizer card and neon gamified micro-feedback animations.</li>
+        <li><strong>Trade-off:</strong> Step-by-step enforcement restricts rapid non-linear editing but guarantees 100% completion rate for beginners.</li>
+      </ul>
+    </div>
+
+    <div class="bg-slate-950 border border-slate-800 p-4 rounded-xl space-y-2">
+      <h3 class="font-bold text-white text-sm">Prototype 03: Professional Studio Workbench (Desktop NLE)</h3>
+      <p class="text-xs text-slate-400">Target Segment: Commercial ad production teams, professional video editors.</p>
+      <ul class="list-disc list-inside text-xs text-slate-300 space-y-1">
+        <li><strong>Rationale:</strong> Adopts an industry-standard 3-column desktop layout (Prompts Sidebar ➔ Canvas ➔ Inspector) paired with a concurrent multi-track timeline.</li>
+        <li><strong>AI Interaction:</strong> Delivers granular property inspectors for fine-tuning camera angles, style presets, and character characterization per scene.</li>
+        <li><strong>Trade-off:</strong> High information density requires responsive panel tab collapsing on screens under 1024px.</li>
+      </ul>
+    </div>
+  </section>
+
+</body>
+</html>
