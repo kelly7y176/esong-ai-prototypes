@@ -3,207 +3,170 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>NEON AI - Cyberpunk Studio</title>
-  <!-- Tailwind CSS via CDN -->
+  <title>Cyberpunk Wizard - AI Short Video</title>
   <script src="https://cdn.tailwindcss.com"></script>
-  <script>
-    tailwind.config = {
-      darkMode: 'class',
-      theme: {
-        extend: {
-          colors: {
-            neon: {
-              cyan: '#00f3ff',
-              pink: '#ff0055',
-              purple: '#b000ff',
-              dark: '#0a0a12',
-              card: '#121220'
-            }
-          }
-        }
-      }
-    }
-  </script>
-  <!-- Vue 3 via CDN -->
   <script src="https://unpkg.com/vue@3/dist/vue.global.js"></script>
-  <!-- FontAwesome Icons -->
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <style>
-    body { background-color: #05050a; }
-    .neon-border-cyan { box-shadow: 0 0 10px #00f3ff; border-color: #00f3ff; }
-    .neon-border-pink { box-shadow: 0 0 10px #ff0055; border-color: #ff0055; }
-    .neon-text-cyan { text-shadow: 0 0 8px #00f3ff; color: #00f3ff; }
-    .neon-text-pink { text-shadow: 0 0 8px #ff0055; color: #ff0055; }
+    @import url('https://fonts.googleapis.com/css2?family=Orbitron:wght@400;700;900&family=Rajdhani:wght@500;700&display=swap');
+    body { font-family: 'Rajdhani', sans-serif; }
+    .font-orbitron { font-family: 'Orbitron', sans-serif; }
+    .no-scrollbar::-webkit-scrollbar { display: none; }
+    .no-scrollbar { -ms-overflow-style: none; scrollbar-width: none; }
     [v-cloak] { display: none; }
+    .neon-border { box-shadow: 0 0 10px rgba(0, 243, 255, 0.3); }
+    .neon-border-pink { box-shadow: 0 0 10px rgba(255, 0, 85, 0.4); }
   </style>
 </head>
-<body class="bg-neon-dark text-slate-100 min-h-screen flex flex-col font-mono selection:bg-neon-pink selection:text-white">
+<body class="bg-slate-950 text-cyan-400 min-h-screen flex flex-col font-sans antialiased selection:bg-pink-500 selection:text-white">
 
-  <div id="app" v-cloak class="min-h-screen flex flex-col max-w-5xl mx-auto w-full px-4 py-6">
+  <div id="app" v-cloak class="min-h-screen flex flex-col max-w-5xl mx-auto w-full px-3 sm:px-6 py-4">
     
     <!-- Cyberpunk Header -->
-    <header class="flex items-center justify-between border-b border-cyan-900/50 pb-4 mb-6">
+    <header class="flex items-center justify-between border-b border-cyan-500/30 pb-4 mb-6 gap-2">
       <div class="flex items-center gap-3">
-        <div class="w-10 h-10 rounded-xl bg-gradient-to-br from-neon-pink to-neon-purple flex items-center justify-center text-white font-black text-xl shadow-[0_0_15px_#ff0055]">
-          ⚡
+        <div class="w-9 h-9 rounded-lg bg-pink-600 flex items-center justify-center font-black text-white text-lg shadow-[0_0_15px_rgba(236,72,153,0.8)]">
+          <i class="fa-solid fa-bolt"></i>
         </div>
         <div>
-          <h1 class="text-xl font-extrabold tracking-wider neon-text-cyan">NEON_GEN.AI</h1>
-          <p class="text-[10px] text-cyan-400/70 tracking-widest uppercase">Cyberpunk Interactive Wizard Mode</p>
+          <h1 class="font-orbitron font-extrabold text-lg sm:text-2xl text-transparent bg-clip-text bg-gradient-to-r from-cyan-400 to-pink-500 tracking-wider">
+            NEON_GEN.AI
+          </h1>
+          <p class="text-[10px] sm:text-xs text-slate-400 font-mono tracking-widest hidden sm:block">CYBERPUNK INTERACTIVE WIZARD MODE</p>
         </div>
       </div>
-      <div class="flex items-center gap-2">
-        <span class="text-xs px-3 py-1 rounded-full border border-neon-cyan/50 text-neon-cyan bg-cyan-950/30 neon-border-cyan">
-          <i class="fa-solid fa-bolt mr-1"></i> GPU ONLINE
-        </span>
+      <div class="px-3 py-1 rounded-full border border-cyan-500/50 bg-cyan-950/40 text-[11px] font-mono text-cyan-300 flex items-center gap-2 shrink-0">
+        <span class="w-2 h-2 rounded-full bg-cyan-400 animate-ping"></span>
+        GPU ONLINE
       </div>
     </header>
 
-    <!-- Wizard Step Navigation Indicator -->
-    <nav aria-label="Wizard Steps" class="grid grid-cols-4 gap-2 mb-8">
-      <button v-for="(step, idx) in steps" :key="idx" @click="currentStep = idx + 1" 
-              :class="currentStep === idx + 1 ? 'border-neon-cyan bg-cyan-950/50 text-neon-cyan neon-border-cyan' : 'border-slate-800 bg-slate-900/40 text-slate-500'"
-              class="p-3 rounded-xl border text-left transition-all duration-300 relative overflow-hidden">
-        <div class="text-[10px] font-bold uppercase tracking-widest text-slate-400">Step 0{{ idx + 1 }}</div>
-        <div class="text-xs font-bold truncate mt-0.5">{{ step.title }}</div>
+    <!-- Wizard Steps Bar (Scrollable on Mobile) -->
+    <nav class="flex overflow-x-auto no-scrollbar gap-2 mb-6 pb-2 border-b border-slate-800">
+      <button v-for="(stepName, idx) in steps" :key="idx"
+              @click="currentStep = idx + 1"
+              :class="currentStep === idx + 1 ? 'border-cyan-400 bg-cyan-950/80 text-cyan-300 neon-border' : 'border-slate-800 bg-slate-900/50 text-slate-500'"
+              class="flex-1 min-w-[100px] sm:min-w-0 p-2.5 rounded-xl border text-left transition-all shrink-0">
+        <span class="text-[9px] font-mono block text-slate-400 uppercase">STEP 0{{ idx + 1 }}</span>
+        <span class="text-xs font-orbitron font-bold tracking-wider truncate block">{{ stepName }}</span>
       </button>
     </nav>
 
-    <!-- STEP 1: PROMPT WIZARD & STORYBOARD -->
-    <main class="flex-1">
-      <section v-show="currentStep === 1" class="space-y-6">
-        <div class="bg-neon-card border border-cyan-900/40 p-6 rounded-2xl relative shadow-[0_0_20px_rgba(0,243,255,0.05)]">
-          <label class="block text-xs font-bold uppercase text-neon-cyan mb-2">Matrix Prompt Synthesizer</label>
-          <div class="flex gap-3">
-            <input v-model="promptInput" type="text" class="flex-1 bg-slate-950 border border-slate-800 rounded-xl px-4 py-3 text-sm text-cyan-100 focus:outline-none focus:border-neon-cyan transition-colors" placeholder="Type prompt or use randomize button...">
-            <button @click="randomizePrompt" class="px-4 py-3 bg-slate-900 border border-slate-700 hover:border-neon-pink rounded-xl text-slate-300 text-xs font-bold hover:text-neon-pink transition-all">
-              🎲 Random
+    <!-- STEP 1: PROMPT SYNTHESIZER -->
+    <main v-if="currentStep === 1" class="space-y-6 flex-1">
+      <div class="bg-slate-900/80 border border-cyan-500/30 rounded-2xl p-4 sm:p-6 space-y-4 neon-border">
+        <h2 class="text-xs font-orbitron font-bold text-cyan-300 tracking-widest uppercase">Matrix Prompt Synthesizer</h2>
+        
+        <!-- Adaptive Layout for Synthesize Controls -->
+        <div class="flex flex-col sm:flex-row gap-3">
+          <input v-model="userPrompt" type="text" class="flex-1 bg-slate-950 border border-cyan-500/40 rounded-xl px-4 py-3 text-xs sm:text-sm text-cyan-100 focus:outline-none focus:border-pink-500 font-mono" placeholder="Synthesize video scene concept...">
+          <div class="flex gap-2">
+            <button @click="randomizePrompt" class="px-4 py-3 bg-slate-800 hover:bg-slate-700 text-cyan-300 font-mono text-xs rounded-xl border border-slate-700 flex-1 sm:flex-none">
+              <i class="fa-solid fa-dice mr-1"></i> Random
             </button>
-            <button @click="generateScenes" :disabled="isGenerating" class="px-6 py-3 bg-gradient-to-r from-neon-pink to-neon-purple hover:opacity-90 rounded-xl text-white font-bold text-xs shadow-[0_0_15px_#ff0055] transition-all">
-              <i class="fa-solid" :class="isGenerating ? 'fa-spin fa-spinner' : 'fa-wand-magic-sparkles'"></i> SYNTHESIZE
-            </button>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
-          <div v-for="(scene, index) in scenes" :key="scene.id" class="bg-neon-card border border-slate-800 rounded-2xl overflow-hidden hover:border-neon-cyan transition-all group">
-            <div class="relative aspect-video">
-              <img :src="scene.image" class="w-full h-full object-cover group-hover:scale-105 transition-transform duration-500">
-              <span class="absolute top-2 left-2 bg-black/80 border border-cyan-500/50 text-neon-cyan text-[10px] px-2 py-0.5 rounded-md">
-                SEQ_0{{ index + 1 }}
-              </span>
-            </div>
-            <div class="p-4 space-y-2">
-              <p class="text-xs text-slate-300 font-medium line-clamp-2">{{ scene.description }}</p>
-              <div class="flex items-center justify-between text-[10px] text-slate-500 pt-2 border-t border-slate-800">
-                <span>{{ scene.style }}</span>
-                <span>{{ scene.duration }} SEC</span>
-              </div>
-            </div>
-          </div>
-        </div>
-
-        <div class="flex justify-end pt-4">
-          <button @click="currentStep = 2" class="px-6 py-3 bg-neon-cyan text-slate-950 font-black text-xs rounded-xl shadow-[0_0_15px_#00f3ff] hover:bg-cyan-300 transition-all">
-            NEXT: TUNE SCENES <i class="fa-solid fa-arrow-right ml-1"></i>
-          </button>
-        </div>
-      </section>
-
-      <!-- STEP 2: SCENE PARAMETER TUNER -->
-      <section v-show="currentStep === 2" class="space-y-6">
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div class="bg-neon-card border border-slate-800 rounded-2xl p-4 space-y-4">
-            <div class="aspect-video rounded-xl overflow-hidden border border-neon-cyan/40 relative">
-              <img :src="selectedScene.image" class="w-full h-full object-cover">
-              <div class="absolute bottom-2 left-2 bg-black/80 px-2 py-1 rounded text-xs text-neon-pink">
-                {{ selectedScene.title }}
-              </div>
-            </div>
-            <div class="flex gap-2">
-              <button v-for="(sc, i) in scenes" :key="sc.id" @click="selectedSceneIndex = i" 
-                      :class="selectedSceneIndex === i ? 'border-neon-cyan text-neon-cyan' : 'border-slate-800 text-slate-500'"
-                      class="flex-1 py-2 text-xs font-bold border rounded-lg bg-slate-950">
-                Scene {{ i + 1 }}
-              </button>
-            </div>
-          </div>
-
-          <div class="bg-neon-card border border-slate-800 rounded-2xl p-5 space-y-4">
-            <h3 class="text-xs font-bold text-neon-cyan uppercase">Render Parameters</h3>
-            <div>
-              <label class="text-[11px] text-slate-400 block mb-1">Lighting Preset</label>
-              <select v-model="selectedScene.mood" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-200">
-                <option v-for="m in mockData.moods" :key="m" :value="m">{{ m }} Cyber-Glow</option>
-              </select>
-            </div>
-            <div>
-              <label class="text-[11px] text-slate-400 block mb-1">Camera Angle</label>
-              <select v-model="selectedScene.cameraAngle" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-2.5 text-xs text-slate-200">
-                <option v-for="a in mockData.cameraAngles" :key="a" :value="a">{{ a }}</option>
-              </select>
-            </div>
-            <button @click="regenerateCurrentScene" class="w-full py-3 bg-slate-900 border border-neon-pink text-neon-pink font-bold text-xs rounded-xl hover:bg-neon-pink hover:text-white transition-all">
-              <i class="fa-solid fa-arrows-rotate mr-1"></i> RE-RENDER FRAME
+            <button @click="synthesizeStoryboard" :disabled="isGenerating" class="px-5 py-3 bg-gradient-to-r from-pink-600 to-purple-600 hover:from-pink-500 hover:to-purple-500 text-white font-orbitron font-bold text-xs rounded-xl neon-border-pink flex-1 sm:flex-none flex items-center justify-center gap-2">
+              <i class="fa-solid" :class="isGenerating ? 'fa-spinner fa-spin' : 'fa-wand-magic-sparkles'"></i>
+              <span>SYNTHESIZE</span>
             </button>
           </div>
         </div>
+      </div>
 
-        <div class="flex justify-between pt-4">
-          <button @click="currentStep = 1" class="px-6 py-3 bg-slate-900 border border-slate-800 text-slate-400 text-xs font-bold rounded-xl">
-            BACK
-          </button>
-          <button @click="currentStep = 3" class="px-6 py-3 bg-neon-cyan text-slate-950 font-black text-xs rounded-xl shadow-[0_0_15px_#00f3ff]">
-            NEXT: CHARACTERS <i class="fa-solid fa-arrow-right ml-1"></i>
-          </button>
+      <!-- Generated Matrix Grid -->
+      <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+        <div v-for="(sc, idx) in scenes" :key="sc.id" class="bg-slate-900/60 border border-slate-800 rounded-2xl overflow-hidden hover:border-cyan-500/50 transition-all flex flex-col">
+          <div class="aspect-video relative bg-black">
+            <img :src="sc.image" class="w-full h-full object-cover">
+            <span class="absolute top-2 left-2 bg-slate-950/80 px-2 py-0.5 rounded text-[10px] font-mono text-cyan-400 border border-cyan-500/30">
+              SEQ_0{{ idx + 1 }}
+            </span>
+          </div>
+          <div class="p-3.5 space-y-2 flex-1 flex flex-col justify-between">
+            <p class="text-xs text-slate-300 font-mono line-clamp-2">{{ sc.title }}</p>
+            <div class="flex items-center justify-between text-[10px] text-slate-500 font-mono pt-2 border-t border-slate-800/80">
+              <span>{{ sc.style }}</span>
+              <span>{{ sc.duration }} SEC</span>
+            </div>
+          </div>
         </div>
-      </section>
+      </div>
 
-      <!-- STEP 3: CHARACTER INJECTION -->
-      <section v-show="currentStep === 3" class="space-y-6">
-        <div class="grid grid-cols-1 md:grid-cols-3 gap-4">
+      <div class="flex justify-end pt-4">
+        <button @click="currentStep = 2" class="w-full sm:w-auto px-6 py-3 bg-cyan-500 text-slate-950 font-orbitron font-bold text-xs rounded-xl hover:bg-cyan-400 transition-colors">
+          NEXT: TUNE SCENES <i class="fa-solid fa-arrow-right ml-1"></i>
+        </button>
+      </div>
+    </main>
+
+    <!-- STEP 2: SCENE TUNER -->
+    <main v-if="currentStep === 2" class="space-y-6 flex-1">
+      <div class="bg-slate-900/80 border border-cyan-500/30 rounded-2xl p-4 sm:p-6 space-y-4">
+        <h2 class="text-xs font-orbitron font-bold text-cyan-300 tracking-widest uppercase">Step 2: Tune Scene Lenses</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          <div class="space-y-2">
+            <label class="text-xs font-mono text-slate-400">Style Matrix</label>
+            <select v-model="activeScene.style" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-cyan-300 font-mono">
+              <option v-for="s in mockData.styles" :key="s" :value="s">{{ s }}</option>
+            </select>
+          </div>
+          <div class="space-y-2">
+            <label class="text-xs font-mono text-slate-400">Camera Angle</label>
+            <select v-model="activeScene.cameraAngle" class="w-full bg-slate-950 border border-slate-800 rounded-xl p-3 text-xs text-cyan-300 font-mono">
+              <option v-for="c in mockData.cameraAngles" :key="c" :value="c">{{ c }}</option>
+            </select>
+          </div>
+        </div>
+      </div>
+      
+      <div class="flex justify-between gap-2">
+        <button @click="currentStep = 1" class="px-5 py-3 bg-slate-800 text-slate-300 font-mono text-xs rounded-xl">Back</button>
+        <button @click="currentStep = 3" class="px-6 py-3 bg-cyan-500 text-slate-950 font-orbitron font-bold text-xs rounded-xl">NEXT: AVATAR <i class="fa-solid fa-arrow-right ml-1"></i></button>
+      </div>
+    </main>
+
+    <!-- STEP 3: CYBER AVATAR -->
+    <main v-if="currentStep === 3" class="space-y-6 flex-1">
+      <div class="bg-slate-900/80 border border-cyan-500/30 rounded-2xl p-4 sm:p-6 space-y-4">
+        <h2 class="text-xs font-orbitron font-bold text-cyan-300 tracking-widest uppercase">Step 3: Character Avatar Injection</h2>
+        <div class="grid grid-cols-1 sm:grid-cols-3 gap-3">
           <div v-for="char in mockData.characters" :key="char.id" @click="selectedChar = char"
-               :class="selectedChar.id === char.id ? 'border-neon-pink neon-border-pink bg-pink-950/20' : 'border-slate-800 bg-neon-card'"
-               class="border rounded-2xl p-4 cursor-pointer transition-all space-y-3">
-            <img :src="char.avatar" class="w-full h-36 object-cover rounded-xl border border-slate-800">
-            <h4 class="font-bold text-sm text-slate-200">{{ char.name }}</h4>
-            <p class="text-[11px] text-slate-400">{{ char.outfit }}</p>
-          </div>
-        </div>
-
-        <div class="flex justify-between pt-4">
-          <button @click="currentStep = 2" class="px-6 py-3 bg-slate-900 border border-slate-800 text-slate-400 text-xs font-bold rounded-xl">
-            BACK
-          </button>
-          <button @click="currentStep = 4" class="px-6 py-3 bg-neon-cyan text-slate-950 font-black text-xs rounded-xl shadow-[0_0_15px_#00f3ff]">
-            NEXT: PREVIEW & RENDER <i class="fa-solid fa-arrow-right ml-1"></i>
-          </button>
-        </div>
-      </section>
-
-      <!-- STEP 4: VIDEO PREVIEW & EXPORT -->
-      <section v-show="currentStep === 4" class="space-y-6">
-        <div class="bg-neon-card border border-slate-800 rounded-2xl p-6 text-center space-y-4">
-          <div class="aspect-video max-w-2xl mx-auto rounded-xl overflow-hidden border border-neon-cyan/50 relative bg-black">
-            <img :src="scenes[activePreviewIndex].image" class="w-full h-full object-cover">
-            <div class="absolute inset-0 bg-black/40 flex items-center justify-center">
-              <button @click="togglePlay" class="w-16 h-16 rounded-full bg-neon-pink text-white flex items-center justify-center text-2xl shadow-[0_0_20px_#ff0055]">
-                <i class="fa-solid" :class="isPlaying ? 'fa-pause' : 'fa-play ml-1'"></i>
-              </button>
+               :class="selectedChar.id === char.id ? 'border-pink-500 bg-pink-950/20 neon-border-pink' : 'border-slate-800 bg-slate-950'"
+               class="p-3 border rounded-xl flex items-center gap-3 cursor-pointer">
+            <img :src="char.avatar" class="w-10 h-10 rounded-lg object-cover">
+            <div class="min-w-0">
+              <p class="text-xs font-bold text-slate-200 truncate">{{ char.name }}</p>
+              <p class="text-[10px] text-slate-500 truncate">{{ char.outfit }}</p>
             </div>
           </div>
-          <p class="text-xs text-cyan-400 font-mono">SIMULATION PREVIEW MODE - CYBERPUNK 60FPS</p>
         </div>
+      </div>
 
-        <div class="flex justify-between pt-4">
-          <button @click="currentStep = 3" class="px-6 py-3 bg-slate-900 border border-slate-800 text-slate-400 text-xs font-bold rounded-xl">
-            BACK
-          </button>
-          <button @click="exportVideo" class="px-8 py-3 bg-gradient-to-r from-neon-pink to-neon-purple text-white font-black text-xs rounded-xl shadow-[0_0_20px_#ff0055]">
-            EXPORT CYBER_VIDEO .MP4
-          </button>
+      <div class="flex justify-between gap-2">
+        <button @click="currentStep = 2" class="px-5 py-3 bg-slate-800 text-slate-300 font-mono text-xs rounded-xl">Back</button>
+        <button @click="currentStep = 4" class="px-6 py-3 bg-cyan-500 text-slate-950 font-orbitron font-bold text-xs rounded-xl">NEXT: RENDER <i class="fa-solid fa-arrow-right ml-1"></i></button>
+      </div>
+    </main>
+
+    <!-- STEP 4: RENDER MATRIX -->
+    <main v-if="currentStep === 4" class="space-y-6 flex-1">
+      <div class="bg-slate-900/80 border border-pink-500/40 rounded-2xl p-4 sm:p-6 space-y-4 text-center">
+        <h2 class="text-xs font-orbitron font-bold text-pink-400 tracking-widest uppercase">Step 4: Final Video Render Matrix</h2>
+        <div class="aspect-video max-w-2xl mx-auto rounded-xl overflow-hidden border border-cyan-500/40 bg-black relative shadow-2xl">
+          <img :src="scenes[0].image" class="w-full h-full object-cover">
+          <div class="absolute inset-0 flex items-center justify-center bg-black/30">
+            <button class="w-14 h-14 rounded-full bg-pink-600 text-white flex items-center justify-center text-xl shadow-lg">
+              <i class="fa-solid fa-play ml-1"></i>
+            </button>
+          </div>
         </div>
-      </section>
+        <button @click="exportCyberVideo" class="px-8 py-3.5 bg-gradient-to-r from-pink-600 to-cyan-500 text-white font-orbitron font-extrabold text-xs rounded-xl shadow-xl">
+          EXPORT CYBER_VIDEO .MP4
+        </button>
+      </div>
+
+      <div class="flex justify-start">
+        <button @click="currentStep = 3" class="px-5 py-3 bg-slate-800 text-slate-300 font-mono text-xs rounded-xl">Back</button>
+      </div>
     </main>
 
   </div>
@@ -216,59 +179,33 @@
       setup() {
         const mockData = MOCK_DATA;
         const currentStep = ref(1);
-        const steps = [
-          { title: "Synthesizer" },
-          { title: "Param Tuner" },
-          { title: "Cyber Avatar" },
-          { title: "Render Matrix" }
-        ];
-        const promptInput = ref(mockData.samplePrompts[0]);
+        const steps = ["Synthesize", "Param Tune", "Cyber Avatar", "Render Matrix"];
+        const userPrompt = ref("A cyberpunk city at night with neon lights");
         const isGenerating = ref(false);
         const scenes = ref([...mockData.scenes]);
-        const selectedSceneIndex = ref(0);
         const selectedChar = ref(mockData.characters[0]);
-        const isPlaying = ref(false);
-        const activePreviewIndex = ref(0);
-        let timer = null;
 
-        const selectedScene = computed(() => scenes.value[selectedSceneIndex.value]);
+        const activeScene = computed(() => scenes.value[0]);
 
         const randomizePrompt = () => {
-          const idx = Math.floor(Math.random() * mockData.samplePrompts.length);
-          promptInput.value = mockData.samplePrompts[idx];
+          const randomIndex = Math.floor(Math.random() * mockData.samplePrompts.length);
+          userPrompt.value = mockData.samplePrompts[randomIndex];
         };
 
-        const generateScenes = () => {
+        const synthesizeStoryboard = async () => {
           isGenerating.value = true;
-          setTimeout(() => {
-            scenes.value.forEach(s => s.image = `https://picsum.photos/seed/${Math.random()}/800/450`);
-            isGenerating.value = false;
-          }, 1000);
+          const newImg = await AI_SERVICE.generateImage(userPrompt.value);
+          scenes.value.forEach(s => s.image = newImg);
+          isGenerating.value = false;
         };
 
-        const regenerateCurrentScene = () => {
-          selectedScene.value.image = `https://picsum.photos/seed/${Math.random()}/800/450`;
-        };
-
-        const togglePlay = () => {
-          isPlaying.value = !isPlaying.value;
-          if (isPlaying.value) {
-            timer = setInterval(() => {
-              activePreviewIndex.value = (activePreviewIndex.value + 1) % scenes.value.length;
-            }, 1000);
-          } else {
-            clearInterval(timer);
-          }
-        };
-
-        const exportVideo = () => {
-          alert("[NEON EXPORT] Cyberpunk MP4 render complete!");
+        const exportCyberVideo = () => {
+          alert("[CYBER_RENDER] Exporting Cyberpunk MP4 Master...");
         };
 
         return {
-          mockData, currentStep, steps, promptInput, isGenerating, scenes,
-          selectedSceneIndex, selectedScene, selectedChar, isPlaying, activePreviewIndex,
-          randomizePrompt, generateScenes, regenerateCurrentScene, togglePlay, exportVideo
+          mockData, currentStep, steps, userPrompt, isGenerating, scenes,
+          selectedChar, activeScene, randomizePrompt, synthesizeStoryboard, exportCyberVideo
         };
       }
     }).mount('#app');
